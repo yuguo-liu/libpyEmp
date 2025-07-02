@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "cmake", "ninja"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyEmp"
+version = "0.1.0"  # 你可以修改版本号
+description = "A Python library powered by pybind11 for secure computation."
+authors = [
+    {name = "hugo", email = "yuguo1228@gmail.com"}
+]
+license = {text = "MIT"}  # 根据你的许可证修改
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/yuguo-liu/pyEmp"  # 替换为你的项目地址
+
+[tool.setuptools]
+packages = ["pyEmp"]  # 指定 Python 包目录
+
+[tool.setuptools.package-data]
+pyEmp = ["*.so"]  # 打包编译后的动态库
