@@ -48,15 +48,27 @@ PYBIND11_MODULE(pyEmp, m) {
                py::arg("rnd_c"),
                py::arg("share"),
                py::arg("check_output") = "");
-     py::class_<EmpTlsPrfCFSF>(m, "EmpTlsPrfCFSF")
+     py::class_<EmpTlsPrfCF>(m, "EmpTlsPrfCF")
           .def(py::init<int, const char*, int, string, bool>(),
                py::arg("party"),
                py::arg("IP"),
                py::arg("port"),
                py::arg("msg"),
                py::arg("debug") = false)
-          .def("offline_computation", &EmpTlsPrfCFSF::offline_computation)
-          .def("online_computation", &EmpTlsPrfCFSF::online_computation,
+          .def("offline_computation", &EmpTlsPrfCF::offline_computation)
+          .def("online_computation", &EmpTlsPrfCF::online_computation,
+               py::arg("seed"),
+               py::arg("share"),
+               py::arg("check_output") = "");
+     py::class_<EmpTlsPrfSF>(m, "EmpTlsPrfSF")
+          .def(py::init<int, const char*, int, string, bool>(),
+               py::arg("party"),
+               py::arg("IP"),
+               py::arg("port"),
+               py::arg("msg"),
+               py::arg("debug") = false)
+          .def("offline_computation", &EmpTlsPrfSF::offline_computation)
+          .def("online_computation", &EmpTlsPrfSF::online_computation,
                py::arg("seed"),
                py::arg("share"),
                py::arg("check_output") = "");

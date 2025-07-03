@@ -1,4 +1,8 @@
 #!bin/bash
+pip uninstall pyEmp
+rm ./pyEmp/pyEmp*.so
+rm -rf ./build
+
 mkdir build
 cd build
 cmake ../src
