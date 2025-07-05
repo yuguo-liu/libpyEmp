@@ -16,9 +16,11 @@ if __name__=='__main__':
 
     host = "127.0.0.1"
 
+    ports = [12345 + i * 5 for i in range(10)]
+
     for i in range(10):
         s_time = time.time()
-        tls_prf_96 = pyEmp.EmpTlsPrfSF(party, host, port, "server finished", False)
+        tls_prf_96 = pyEmp.EmpTlsPrfSF(party, host, ports[i], "server finished", False)
         tls_prf_96.offline_computation()
         print(f"offline duration: {(time.time() - s_time) * 1000}ms")
 
@@ -29,5 +31,4 @@ if __name__=='__main__':
         print(f"0x{res}")
         input(f"{i} press any key to continue")
         del tls_prf_96
-        gc.collect()
     

@@ -1,9 +1,7 @@
 import string
-import sys
 import pyEmp
 import time
 import random
-import gc
 
 def generate_hex_string(length, seed=None):
     if seed is not None:
@@ -15,7 +13,7 @@ if __name__=='__main__':
     party, port = 1, 12345
     print("I'm Alice!")
 
-    for block_length in range(1, 21):
+    for block_length in [1, 1, 1, 1, 1, 1]:
         print(f"{block_length}", "====" * 10)
 
         bob_m         = generate_hex_string(block_length * 32, seed=123)
@@ -44,6 +42,5 @@ if __name__=='__main__':
         print(f"get tag    0x{c[-32:]}")
 
         del aesgcm
-        gc.collect()
     
     

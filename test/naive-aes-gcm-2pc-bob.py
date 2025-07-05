@@ -1,10 +1,8 @@
 import string
-import sys
 import pyEmp
 import time
 import random
 import json
-import gc
 
 def generate_hex_string(length, seed=None):
     if seed is not None:
@@ -19,7 +17,7 @@ if __name__=='__main__':
 
     exp_data = {}
 
-    for block_length in range(1, 21):
+    for block_length in [1, 1, 1, 1, 1, 1]:
         exp_data[f"block-{block_length}"] = {
             "online": 0.0,
             "offline": 0.0
@@ -56,7 +54,6 @@ if __name__=='__main__':
         print(f"get cipher 0x{c[:-32]}")
         print(f"get tag    0x{c[-32:]}")
         del aesgcm
-        gc.collect()
     
     with open("./comm_data/aes-gcm.json", "w") as j:
         json.dump(exp_data, j, indent=4)

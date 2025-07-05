@@ -29,6 +29,7 @@ private:
 
 public:
     EmpAg2pcGarbledCircuit(string circuit_file_name, int _party, const char *IP, int port, bool _debug = false);
+    ~EmpAg2pcGarbledCircuit();
     void offline_computation();
     string online_computation(string hin = "", string check_output = "");
     NetIO* get_NetIO();
@@ -48,6 +49,7 @@ private:
 
 public:
     EmpECtF(int _party, const char *IP, int port, bool _debug = false, bool _log = false);
+    ~EmpECtF();
     void offline_computation();
     string online_computation(string hin = "", string check_output = "");
 };
@@ -72,6 +74,7 @@ private:
 
 public:
     EmpTlsPrf384(int _party, const char *IP, int port, bool _debug = false);
+    ~EmpTlsPrf384();
     void offline_computation();
     string online_computation(string rnd_s, string rnd_c, string share, string check_output = "");
 };
@@ -96,6 +99,7 @@ private:
 
 public:
     EmpTlsPrf320(int _party, const char *IP, int port, bool _debug = false);
+    ~EmpTlsPrf320();
     void offline_computation();
     string online_computation(string rnd_s, string rnd_c, string share, string check_output = "");
 };
@@ -121,6 +125,7 @@ private:
 
 public:
     EmpTlsPrfCF(int _party, const char *IP, int port, string msg, bool _debug = false);
+    ~EmpTlsPrfCF();
     void offline_computation();
     string online_computation(string seed, string share, string check_output = "");
 };
@@ -146,6 +151,7 @@ private:
 
 public:
     EmpTlsPrfSF(int _party, const char *IP, int port, string msg, bool _debug = false);
+    ~EmpTlsPrfSF();
     void offline_computation();
     string online_computation(string seed, string share, string check_output = "");
 };
@@ -160,6 +166,7 @@ private:
 
 public:
     EmpNaiveAesGcmEnc(int _party, const char *IP, int port, int _len_c, int _len_a, bool _debug = false);
+    ~EmpNaiveAesGcmEnc();
     void offline_computation();
     string online_computation(string m, string ad, string key_share, string iv_share);
 };
@@ -174,6 +181,7 @@ private:
 
 public:
     EmpNaiveAesGcmDec(int _party, const char *IP, int port, int _len_c, int _len_a, bool _debug = false);
+    ~EmpNaiveAesGcmDec();
     void offline_computation();
     string online_computation(string c, string ad, string key_share, string iv_share, string tag);
 };
@@ -188,6 +196,7 @@ private:
 
 public:
     EmpNaiveAesGcmPredicateEnc(int _party, const char *IP, int port, int _len_c, int _len_a, bool _debug = false);
+    ~EmpNaiveAesGcmPredicateEnc();
     void offline_computation();
     string online_computation(string m, string ad, string key_share, string iv_share, string commitment, string r_com);
 };
@@ -203,17 +212,23 @@ EmpAg2pcGarbledCircuit::EmpAg2pcGarbledCircuit(string circuit_file_name, int _pa
     io->flush();
     cout << "one time:\t" << party << "\t" << emp::time_from(t1) <<endl;
     
-    is_online = false;
-    debug = _debug;
-}
-
-void EmpAg2pcGarbledCircuit::offline_computation() {
-    auto t1 = emp::clock_start();
+    t1 = emp::clock_start();
     twopc->function_independent();
     io->flush();
     cout << "inde:\t" << party << "\t" << emp::time_from(t1) << endl;
 
-    t1 = emp::clock_start();
+    is_online = false;
+    debug = _debug;
+}
+
+EmpAg2pcGarbledCircuit::~EmpAg2pcGarbledCircuit() {
+    delete twopc;
+    delete io;
+    delete cf;
+}
+
+void EmpAg2pcGarbledCircuit::offline_computation() {
+    auto t1 = emp::clock_start();
     twopc->function_dependent();
     io->flush();
     cout << "dep:\t" << party << "\t" << emp::time_from(t1) << endl;
@@ -479,6 +494,11 @@ EmpECtF::EmpECtF(int _party, const char *IP, int port, bool _debug, bool _log) {
     LOG = _log;
 }
 
+EmpECtF::~EmpECtF() {
+    delete add_2_xor_circuit;
+    delete ot;
+}
+
 void EmpECtF::offline_computation() {
     add_2_xor_circuit->offline_computation();
 }
@@ -741,6 +761,14 @@ EmpTlsPrf384::EmpTlsPrf384(int _party, const char *IP, int port, bool _debug) {
     DEBUG = _debug;
 }
 
+EmpTlsPrf384::~EmpTlsPrf384() {
+    delete hmac1;
+    delete hmac2;
+    delete hmac3;
+    delete hmac4;
+    delete hmac5;
+}
+
 void EmpTlsPrf384::offline_computation() {
     hmac1->offline_computation();
     hmac2->offline_computation();
@@ -898,6 +926,14 @@ EmpTlsPrf320::EmpTlsPrf320(int _party, const char *IP, int port, bool _debug) {
     hmac4 = new EmpAg2pcGarbledCircuit(hmac4_cfn, _party, IP, port, _debug);
     hmac5 = new EmpAg2pcGarbledCircuit(hmac5_cfn, _party, IP, port, _debug);
     DEBUG = _debug;
+}
+
+EmpTlsPrf320::~EmpTlsPrf320() {
+    delete hmac1;
+    delete hmac2;
+    delete hmac3;
+    delete hmac4;
+    delete hmac5;
 }
 
 void EmpTlsPrf320::offline_computation() {
@@ -1069,6 +1105,14 @@ EmpTlsPrfCF::EmpTlsPrfCF(int _party, const char *IP, int port, string _msg, bool
     msg = _msg;
 }
 
+EmpTlsPrfCF::~EmpTlsPrfCF() {
+    delete hmac1;
+    delete hmac2;
+    delete hmac3;
+    delete hmac4;
+    delete hmac5;
+}
+
 void EmpTlsPrfCF::offline_computation() {
     hmac1->offline_computation();
     hmac2->offline_computation();
@@ -1217,21 +1261,39 @@ string EmpTlsPrfCF::online_computation(string seed, string share, string check_o
 
 EmpTlsPrfSF::EmpTlsPrfSF(int _party, const char *IP, int port, string _msg, bool _debug) {
     party = _party;
+    if (party == BOB) sleep(0.1);
     hmac1 = new EmpAg2pcGarbledCircuit(hmac1_cfn, _party, IP, port, _debug);
+    if (party == BOB) sleep(0.1);
     hmac2 = new EmpAg2pcGarbledCircuit(hmac2_cfn, _party, IP, port, _debug);
+    if (party == BOB) sleep(0.1);
     hmac3 = new EmpAg2pcGarbledCircuit(hmac3_cfn, _party, IP, port, _debug);
+    if (party == BOB) sleep(0.1);
     hmac4 = new EmpAg2pcGarbledCircuit(hmac4_cfn, _party, IP, port, _debug);
+    if (party == BOB) sleep(0.1);
     hmac5 = new EmpAg2pcGarbledCircuit(hmac5_cfn, _party, IP, port, _debug);
     DEBUG = _debug;
     assert(_msg == "server finished");
     msg = _msg;
 }
 
+EmpTlsPrfSF::~EmpTlsPrfSF() {
+    delete hmac1;
+    delete hmac2;
+    delete hmac3;
+    delete hmac4;
+    delete hmac5;
+}
+
 void EmpTlsPrfSF::offline_computation() {
+    if (party == BOB) sleep(0.1);
     hmac1->offline_computation();
+    if (party == BOB) sleep(0.1);
     hmac2->offline_computation();
+    if (party == BOB) sleep(0.1);
     hmac3->offline_computation();
+    if (party == BOB) sleep(0.1);
     hmac4->offline_computation();
+    if (party == BOB) sleep(0.1);
     hmac5->offline_computation();
 }
 
@@ -1382,6 +1444,10 @@ EmpNaiveAesGcmEnc::EmpNaiveAesGcmEnc(int _party, const char *IP, int port, int _
     DEBUG = _debug;
 }
 
+EmpNaiveAesGcmEnc::~EmpNaiveAesGcmEnc() {
+    delete aesgcm_circuit;
+}
+
 void EmpNaiveAesGcmEnc::offline_computation() {
     aesgcm_circuit->offline_computation();
 }
@@ -1430,6 +1496,10 @@ EmpNaiveAesGcmDec::EmpNaiveAesGcmDec(int _party, const char *IP, int port, int _
     DEBUG = _debug;
 }
 
+EmpNaiveAesGcmDec::~EmpNaiveAesGcmDec() {
+    delete aesgcm_circuit;
+}
+
 void EmpNaiveAesGcmDec::offline_computation() {
     aesgcm_circuit->offline_computation();
 }
@@ -1475,6 +1545,10 @@ EmpNaiveAesGcmPredicateEnc::EmpNaiveAesGcmPredicateEnc(int _party, const char *I
     len_a_i = _len_a;
     len_c_i = _len_c;
     DEBUG = _debug;
+}
+
+EmpNaiveAesGcmPredicateEnc::~EmpNaiveAesGcmPredicateEnc() {
+    delete pre_aesgcm_circuit;
 }
 
 void EmpNaiveAesGcmPredicateEnc::offline_computation() {
